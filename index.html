@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="贵宾厅 LoungeGuide：离线查询机场和火车站贵宾厅，查看位置、时间与准入参考。">
+  <meta name="theme-color" content="#f8f6f0">
+  <title>贵宾厅 LoungeGuide · 出行前，先找到休息的地方</title>
+  <link rel="icon" href="app-icon.png">
+  <style>
+    :root{color-scheme:light;--bg:#f8f6f0;--paper:#fff;--ink:#172e28;--muted:#60706a;--green:#164b3c;--green-dark:#103b30;--line:#e4e9e2;--gold:#b39d6c}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:24px}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}
+    a{color:var(--green);text-underline-offset:4px}
+    a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+    .wrap{width:min(1100px,100% - 48px);margin:auto}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;color:var(--ink);font-weight:750;text-decoration:none}
+    .brand img{width:44px;height:44px;border-radius:13px}
+    .brand span{line-height:1.2}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.08em}
+    nav{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    nav a{font-size:14px;color:var(--muted);font-weight:650;text-decoration:none}
+    nav a:hover{color:var(--green)}
+    .languages{display:flex;background:#eaece5;border-radius:99px;padding:4px;gap:2px}
+    .languages button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;cursor:pointer}
+    .languages button[aria-pressed="true"]{background:var(--green);color:white}
+    .hero{display:grid;grid-template-columns:1fr .85fr;align-items:center;gap:50px;padding:56px 0 70px}
+    .eyebrow{display:inline-block;color:var(--green);background:#e5eee7;border-radius:99px;padding:5px 13px;font-size:12px;font-weight:750;letter-spacing:.06em}
+    h1{font-size:clamp(38px,5vw,62px);line-height:1.15;letter-spacing:-.04em;margin:22px 0}
+    .lead{max-width:570px;color:var(--muted);font-size:18px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 20px;border-radius:12px;background:var(--green);color:white;text-decoration:none;font-weight:700}
+    .button:hover{background:var(--green-dark)}
+    .button.outline{color:var(--green);background:transparent;border:1px solid #aac2b4}
+    .fine{font-size:13px;color:var(--muted)}
+    .preview{background:#e3ebe2;border:1px solid #d5e0d4;border-radius:34px;padding:30px;text-align:center}
+    .preview img{display:block;width:min(100%,286px);height:auto;margin:auto;border-radius:24px;box-shadow:0 20px 55px #183f3126}
+    .preview p{margin:14px 0 0}
+    section{margin:0 0 80px}
+    .section-heading{display:flex;gap:20px;align-items:end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap}
+    h2{font-size:clamp(27px,3vw,38px);line-height:1.25;letter-spacing:-.025em;margin:0}
+    h3{font-size:18px;line-height:1.4;margin:0 0 10px}
+    p{margin:0 0 14px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px}
+    .card p:last-child{margin-bottom:0}
+    .card p,.policy p,.policy li{color:var(--muted)}
+    .number{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:10px;background:#e5eee7;color:var(--green);font-weight:800;font-size:13px;margin-bottom:16px}
+    .notice{border-left:4px solid var(--gold);background:#f0eee3;border-radius:4px 14px 14px 4px;padding:18px 22px;margin-top:18px}
+    .notice p{margin:0}
+    .policy{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,4vw,42px)}
+    .policy h3{margin-top:28px}.policy h3:first-of-type{margin-top:0}
+    .policy ul{padding-left:22px}.policy li{margin:7px 0}
+    .support-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
+    .footer-inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    @media(max-width:760px){.hero{grid-template-columns:1fr;gap:30px;padding:35px 0 50px}.grid,.support-grid{grid-template-columns:1fr}section{margin-bottom:60px}.preview{padding:22px}.wrap{width:min(100% - 32px,1100px)}nav{gap:14px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top"><img src="app-icon.png" alt=""><span>贵宾厅<small>LOUNGEGUIDE</small></span></a>
+    <nav aria-label="页面导航">
+      <a href="#features" data-zh="功能" data-en="Features">功能</a>
+      <a href="#privacy" data-zh="隐私" data-en="Privacy">隐私</a>
+      <a href="#support" data-zh="支持" data-en="Support">支持</a>
+      <div class="languages" role="group" aria-label="Language">
+        <button type="button" data-language="zh" aria-pressed="true">中文</button>
+        <button type="button" data-language="en" aria-pressed="false">English</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <span class="eyebrow" data-zh="机场与火车站 · 离线可查" data-en="AIRPORTS &amp; RAIL STATIONS · OFFLINE">机场与火车站 · 离线可查</span>
+        <h1 data-zh="出行前，先找到休息的地方。" data-en="Find a place to pause before your journey.">出行前，先找到休息的地方。</h1>
+        <p class="lead" data-zh="在一个页面搜索机场、火车站和贵宾厅，查看位置、公布时段与准入参考。无需注册，离线也能查阅已收录目录。" data-en="Search airports, railway stations and lounges in one place. Explore locations, published hours and access references. No account is needed, and the included directory works offline.">在一个页面搜索机场、火车站和贵宾厅，查看位置、公布时段与准入参考。无需注册，离线也能查阅已收录目录。</p>
+        <div class="actions">
+          <a class="button" href="#getting-started" data-zh="了解如何使用" data-en="Get started">了解如何使用</a>
+          <a class="button outline" href="#privacy" data-zh="隐私说明" data-en="Privacy information">隐私说明</a>
+        </div>
+        <p class="fine" style="margin-top:20px" data-zh="适用于 iOS / iPadOS 17 或更高版本。App 界面目前为中文。目录仅供参考，实际情况请以服务方为准。" data-en="For iOS / iPadOS 17 or later. The app interface is currently in Chinese. Directory information is a reference; confirm current details with the provider.">适用于 iOS / iPadOS 17 或更高版本。App 界面目前为中文。目录仅供参考，实际情况请以服务方为准。</p>
+      </div>
+      <div class="preview">
+        <img src="home-preview.jpg" alt="贵宾厅 App 的场站搜索和贵宾厅列表界面" data-zh-alt="贵宾厅 App 的场站搜索和贵宾厅列表界面" data-en-alt="LoungeGuide station search and lounge list">
+        <p class="fine" data-zh="App 界面示意，内容以实际版本为准。" data-en="App interface preview; details may vary by version.">App 界面示意，内容以实际版本为准。</p>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-heading"><h2 data-zh="让每一次查找更清楚" data-en="A clearer way to find a lounge">让每一次查找更清楚</h2><p class="fine" data-zh="为出行前的查询而设计" data-en="Designed for planning ahead">为出行前的查询而设计</p></div>
+      <div class="grid">
+        <div class="card"><span class="number">01</span><h3 data-zh="搜索场站与贵宾厅" data-en="Search stations and lounges">搜索场站与贵宾厅</h3><p data-zh="使用城市、机场三字码、厅名、位置关键词或拼音查找，在同一页面切换场站。" data-en="Search by city, airport code, lounge name, location keywords or pinyin, and switch stations on the same screen.">使用城市、机场三字码、厅名、位置关键词或拼音查找，在同一页面切换场站。</p></div>
+        <div class="card"><span class="number">02</span><h3 data-zh="查看位置与时段" data-en="Review locations and hours">查看位置与时段</h3><p data-zh="查看已收录的区域、安检位置、走法和公布时段，并按区域、通道等条件筛选。" data-en="Review available area, security-side, route and published-hour information, and filter by area or network.">查看已收录的区域、安检位置、走法和公布时段，并按区域、通道等条件筛选。</p></div>
+        <div class="card"><span class="number">03</span><h3 data-zh="收藏与本机参考" data-en="Save and compare locally">收藏与本机参考</h3><p data-zh="收藏常用厅，选择卡片、会籍与行程条件查看相关参考；资料保存在本机，不收集卡号或会员号。" data-en="Save lounges and select cards, memberships and trip details for relevant references. Your selections stay on your device; card and membership numbers are not collected.">收藏常用厅，选择卡片、会籍与行程条件查看相关参考；资料保存在本机，不收集卡号或会员号。</p></div>
+      </div>
+      <div class="notice"><p data-zh="通道或银行关联不代表一定有资格入场或免费使用。请在出行前向发卡行、服务商或场所核实适用条件、次数和预约要求。" data-en="A network or bank association does not guarantee entry or complimentary access. Confirm eligibility, remaining visits and booking requirements with your bank, provider or lounge.">通道或银行关联不代表一定有资格入场或免费使用。请在出行前向发卡行、服务商或场所核实适用条件、次数和预约要求。</p></div>
+    </section>
+
+    <section id="getting-started">
+      <div class="section-heading"><h2 data-zh="开始查找" data-en="Get started">开始查找</h2></div>
+      <div class="grid">
+        <div class="card"><span class="number">1</span><h3 data-zh="选择场站" data-en="Choose a station">选择场站</h3><p data-zh="搜索机场或车站，或主动使用定位按所在城市查找已收录场站。拒绝定位也可手动搜索。" data-en="Search for an airport or station, or choose to use location to find listed stations by city. Manual search remains available without location access.">搜索机场或车站，或主动使用定位按所在城市查找已收录场站。拒绝定位也可手动搜索。</p></div>
+        <div class="card"><span class="number">2</span><h3 data-zh="查看详情" data-en="Explore the details">查看详情</h3><p data-zh="展开贵宾厅，查看位置、时段和已收录的来源；需要时使用筛选或收藏。" data-en="Expand a lounge to review its location, hours and available sources. Use filters or favorites when helpful.">展开贵宾厅，查看位置、时段和已收录的来源；需要时使用筛选或收藏。</p></div>
+        <div class="card"><span class="number">3</span><h3 data-zh="出发前核对" data-en="Confirm before travel">出发前核对</h3><p data-zh="场所状态和政策可能变化，请联系场所或权益服务方确认最新信息。" data-en="Lounge availability and policies can change. Contact the lounge or benefit provider for current information.">场所状态和政策可能变化，请联系场所或权益服务方确认最新信息。</p></div>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="section-heading"><h2 data-zh="隐私说明" data-en="Privacy information">隐私说明</h2><p class="fine" data-zh="更新日期：2026 年 10 月 27 日" data-en="Updated: October 27, 2026">更新日期：2026 年 10 月 27 日</p></div>
+      <div class="policy">
+        <p data-zh="本说明适用于贵宾厅 LoungeGuide App 和本网站。App 无需注册；当前版本未接入广告、跨 App 跟踪或第三方统计服务，也不要求提供银行卡号、身份证号、会员号或联系方式。" data-en="This notice applies to the LoungeGuide app and this website. The app requires no account. The current version has no ads, cross-app tracking or third-party analytics, and does not ask for card numbers, identity numbers, membership numbers or contact details.">本说明适用于贵宾厅 LoungeGuide App 和本网站。App 无需注册；当前版本未接入广告、跨 App 跟踪或第三方统计服务，也不要求提供银行卡号、身份证号、会员号或联系方式。</p>
+        <h3 data-zh="本机资料与保存期限" data-en="On-device data and retention">本机资料与保存期限</h3>
+        <p data-zh="您选择的卡片产品、会籍、通道、行程条件、收藏、当前场站、最近查询及更新设置保存在设备本地，用于筛选和参考匹配。资料会保留到您修改、清除或删除 App；损坏的资料可能保留本机恢复副本。下载目录保留到更新替换、恢复内置目录或清除本机数据。" data-en="Selected card products, memberships, networks, trip details, favorites, current and recent stations, and update settings are stored on your device for filtering and reference matching. They remain until changed, cleared or the app is deleted. A local recovery copy may be retained if data is damaged. Downloaded directories remain until replaced, restored to the bundled version or cleared.">您选择的卡片产品、会籍、通道、行程条件、收藏、当前场站、最近查询及更新设置保存在设备本地，用于筛选和参考匹配。资料会保留到您修改、清除或删除 App；损坏的资料可能保留本机恢复副本。下载目录保留到更新替换、恢复内置目录或清除本机数据。</p>
+        <p data-zh="您可在 App 的「数据更新与设置」清除最近查询，或清除全部本机资料、恢复副本和下载目录。iOS 设备备份可能包含应用数据，由系统与您的备份设置控制。" data-en="In Data Updates &amp; Settings you can clear recent searches or all local data, recovery copies and downloaded directories. iOS device backups may include app data according to your system and backup settings.">您可在 App 的「数据更新与设置」清除最近查询，或清除全部本机资料、恢复副本和下载目录。iOS 设备备份可能包含应用数据，由系统与您的备份设置控制。</p>
+        <h3 data-zh="位置与城市查询" data-en="Location and city lookup">位置与城市查询</h3>
+        <p data-zh="只有您主动查询并授予定位权限后，App 才请求一次公里级精度的位置，用于识别所在城市；不会持续追踪，也不会将坐标保存到本机资料或发送给目录更新服务。坐标会交给 Apple 地理编码服务转换为城市名称，该过程可能通过网络访问 Apple 服务。关闭查询页面会停止查询。您可在 iOS 设置中撤回授权，也可手动搜索。" data-en="Only when you initiate a lookup and grant location access does the app request a one-time, kilometer-level location to identify your city. It does not continuously track you or save coordinates in your profile or send them to the directory update service. Coordinates are passed to Apple’s geocoding service to obtain a city name, which may involve an Apple network service. Closing the lookup stops the request. You can revoke permission in iOS Settings or search manually.">只有您主动查询并授予定位权限后，App 才请求一次公里级精度的位置，用于识别所在城市；不会持续追踪，也不会将坐标保存到本机资料或发送给目录更新服务。坐标会交给 Apple 地理编码服务转换为城市名称，该过程可能通过网络访问 Apple 服务。关闭查询页面会停止查询。您可在 iOS 设置中撤回授权，也可手动搜索。</p>
+        <h3 data-zh="目录更新与网络信息" data-en="Directory updates and network information">目录更新与网络信息</h3>
+        <p data-zh="App 从 GitCode 公开仓库通过 HTTPS 检查和下载目录，不会在请求中附带本机资料、收藏、搜索内容或位置。自动更新可在设置中关闭；关闭后仍可使用本机目录并手动检查。GitCode 及其网络服务商可能接收 IP 地址、请求时间、请求地址和常规连接信息，并按其规则处理。App 无法替服务方删除日志。" data-en="The app checks and downloads the directory from a public GitCode repository over HTTPS. Requests do not include your profile, favorites, searches or location. Automatic updates can be turned off in Settings; the local directory and manual checks remain available. GitCode and its network providers may receive your IP address, request time, URL and standard connection information and handle them under their own policies. The app cannot delete their logs.">App 从 GitCode 公开仓库通过 HTTPS 检查和下载目录，不会在请求中附带本机资料、收藏、搜索内容或位置。自动更新可在设置中关闭；关闭后仍可使用本机目录并手动检查。GitCode 及其网络服务商可能接收 IP 地址、请求时间、请求地址和常规连接信息，并按其规则处理。App 无法替服务方删除日志。</p>
+        <h3 data-zh="来源、分享与反馈" data-en="Sources, sharing and feedback">来源、分享与反馈</h3>
+        <p data-zh="打开来源链接会访问第三方网站，对方可获得常规网络连接信息，并适用其隐私规则。复制内容会写入系统剪贴板；分享或导出会将您确认的文字交给所选接收方。提交反馈需由您自行前往 GitCode 并确认，Issue 公开可见，可能需要登录；请勿填写敏感信息。" data-en="Opening a source link visits a third-party website, which may receive standard connection information and applies its own privacy policy. Copying writes to the system clipboard; sharing or exporting sends the text you choose to the selected recipient. Feedback is submitted only when you choose to submit it on GitCode. Issues are public and may require sign-in; do not include sensitive information.">打开来源链接会访问第三方网站，对方可获得常规网络连接信息，并适用其隐私规则。复制内容会写入系统剪贴板；分享或导出会将您确认的文字交给所选接收方。提交反馈需由您自行前往 GitCode 并确认，Issue 公开可见，可能需要登录；请勿填写敏感信息。</p>
+        <h3 data-zh="本网站与联系方式" data-en="This website and contact">本网站与联系方式</h3>
+        <p data-zh="本页面由 GitHub Pages 托管，不使用本站统计工具或广告。GitHub 及其网络服务商可能处理常规访问日志。隐私疑问或产品问题可通过下方支持入口联系；公开 Issue 不适合提交敏感个人信息。" data-en="This page is hosted by GitHub Pages and does not use site analytics or advertising. GitHub and its network providers may process standard access logs. For privacy or product questions, use the support link below; public issues are not suitable for sensitive personal information.">本页面由 GitHub Pages 托管，不使用本站统计工具或广告。GitHub 及其网络服务商可能处理常规访问日志。隐私疑问或产品问题可通过下方支持入口联系；公开 Issue 不适合提交敏感个人信息。</p>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="section-heading"><h2 data-zh="支持与反馈" data-en="Support and feedback">支持与反馈</h2><p class="fine" data-zh="遇到问题或发现资料变化？" data-en="Found an issue or outdated information?">遇到问题或发现资料变化？</p></div>
+      <div class="support-grid">
+        <div class="card">
+          <h3 data-zh="反馈问题或纠正信息" data-en="Report a problem or correction">反馈问题或纠正信息</h3>
+          <p data-zh="在 App 的「数据更新与设置 → 反馈与纠错」复制内容，或直接前往 GitCode 创建 Issue。请描述场站、问题与可核对来源，并确认提交。" data-en="Copy a report from Data Updates &amp; Settings → Feedback in the app, or create an issue on GitCode. Include the station, the problem and a source that can be checked, then confirm submission.">在 App 的「数据更新与设置 → 反馈与纠错」复制内容，或直接前往 GitCode 创建 Issue。请描述场站、问题与可核对来源，并确认提交。</p>
+          <p class="fine" data-zh="Issue 公开可见，可能需要 GitCode 登录。请勿填写卡号、身份证号、会员号或其他敏感信息。" data-en="Issues are public and may require a GitCode account. Do not include card numbers, identity numbers, membership numbers or other sensitive information.">Issue 公开可见，可能需要 GitCode 登录。请勿填写卡号、身份证号、会员号或其他敏感信息。</p>
+          <a class="button" href="https://gitcode.com/chenkaitech/LoungeGuide/issues/new" data-zh="前往 GitCode 反馈" data-en="Open GitCode feedback">前往 GitCode 反馈</a>
+        </div>
+        <div class="card">
+          <h3 data-zh="常见问题" data-en="Common questions">常见问题</h3>
+          <p><strong data-zh="无法定位？" data-en="Location unavailable?">无法定位？</strong> <span data-zh="检查 iOS 定位服务和 App 权限，或返回首页手动搜索。" data-en="Check iOS Location Services and app permission, or return to search manually.">检查 iOS 定位服务和 App 权限，或返回首页手动搜索。</span></p>
+          <p><strong data-zh="更新失败？" data-en="Update failed?">更新失败？</strong> <span data-zh="请检查网络并稍后重试；现有目录仍可离线使用。" data-en="Check your connection and retry later; the existing directory remains available offline.">请检查网络并稍后重试；现有目录仍可离线使用。</span></p>
+          <p><strong data-zh="能否直接入场？" data-en="Can I enter?">能否直接入场？</strong> <span data-zh="匹配结果仅为参考，实际资格和剩余次数请向服务方确认。" data-en="Matches are references only. Confirm eligibility and remaining visits with your provider.">匹配结果仅为参考，实际资格和剩余次数请向服务方确认。</span></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><span>© LoungeGuide · 贵宾厅</span><div><a href="#privacy" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="#support" data-zh="支持" data-en="Support">支持</a></div></div></footer>
+</div>
+<script>
+  const buttons = document.querySelectorAll("[data-language]");
+  function setLanguage(language) {
+    const english = language === "en";
+    document.documentElement.lang = english ? "en" : "zh-CN";
+    document.querySelectorAll("[data-zh][data-en]").forEach(element => {
+      element.textContent = element.getAttribute(english ? "data-en" : "data-zh");
+    });
+    document.querySelectorAll("[data-zh-alt][data-en-alt]").forEach(element => {
+      element.alt = element.getAttribute(english ? "data-en-alt" : "data-zh-alt");
+    });
+    buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
+    document.title = english ? "LoungeGuide · Find a place to pause" : "贵宾厅 LoungeGuide · 出行前，先找到休息的地方";
+    document.querySelector('meta[name="description"]').content = english
+      ? "LoungeGuide helps you find airport and railway lounges, locations and access references offline."
+      : "贵宾厅 LoungeGuide：离线查询机场和火车站贵宾厅，查看位置、时间与准入参考。";
+    document.querySelector("nav").setAttribute("aria-label", english ? "Page navigation" : "页面导航");
+  }
+  buttons.forEach(button => button.addEventListener("click", () => setLanguage(button.dataset.language)));
+</script>
+</body>
+</html>
